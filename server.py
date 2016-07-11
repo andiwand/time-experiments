@@ -24,8 +24,8 @@ try:
             print "%s:%d connected" % addr
             path = os.path.join(args.directory, addr[0].replace(".", "_") + ".txt")
             f = open(path, "a")
-            clients[addr] = {"log_path": path, "log_file": f}
-        f = clients[addr]["log_file"]
+            clients[addr[0]] = {"log_path": path, "log_file": f}
+        f = clients[addr[0]]["log_file"]
         f.write(t)
         f.write(" ")
         f.write(data)
