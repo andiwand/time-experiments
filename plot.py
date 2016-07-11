@@ -17,16 +17,13 @@ for i, path in enumerate(files):
     data = np.array(data)
     x, y = zip(*data)
 
-    """
     coefs = poly.polyfit(x, y, 1)
     fit = poly.Polynomial(coefs)
-    y0 = fit(x[0])
     x = x - x[0]
-    y = y - y0 - x
+    y = y - y[0] - x
 
     coefs = poly.polyfit(x, y, 1)
     fit = poly.Polynomial(coefs)
-    """
     c = np.array(colors[i])
 
     plt.scatter(x, y, s=20, c=c, alpha=0.5, lw=0, label=os.path.basename(path))
