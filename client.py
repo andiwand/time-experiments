@@ -21,6 +21,7 @@ try:
     while True:
         t = "%.9f" % shared.utc_nano()
         sock.sendto(t, socket_address)
+        print t
         time.sleep(args.interval)
 finally:
     sock.close()

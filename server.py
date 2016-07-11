@@ -20,7 +20,7 @@ try:
     while True:
         data, addr = sock.recvfrom(1024)
         t = "%.9f" % shared.utc_nano()
-        if addr not in clients:
+        if addr[0] not in clients:
             print "%s:%d connected" % addr
             path = os.path.join(args.directory, addr[0].replace(".", "_") + ".txt")
             f = open(path, "a")
