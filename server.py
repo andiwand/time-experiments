@@ -12,7 +12,7 @@ parser.add_argument("-p", "--port", type=int, help="set port number (default 123
 args = parser.parse_args()
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind(("127.0.0.1", args.port))
+sock.bind(("0.0.0.0", args.port))
 
 clients = {}
 
