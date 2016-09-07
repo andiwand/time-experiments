@@ -1,5 +1,6 @@
 import time
 import datetime
+import ping as pingimpl
 
 def utc_nano():
     utc = time.mktime(datetime.datetime.utcnow().timetuple())
@@ -11,3 +12,7 @@ def utc_nano():
     else:
         t = utc + t - int(t)
     return t
+
+def ping(dest, timeout=5):
+    return pingimpl.do_one(dest, timeout)
+

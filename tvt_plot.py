@@ -1,14 +1,19 @@
 #!/usr/bin/env python2
 
 import os
+import argparse
 import numpy as np
 import numpy.polynomial.polynomial as poly
 import matplotlib.pyplot as plt
 
 colors = [(1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 0, 1), (1, 1, 0), (0, 1, 1)]
 
-path = "/home/andreas/Desktop/data"
-files = [os.path.join(path, f) for f in os.listdir(path) if os.path.isfile(os.path.join(path, f)) and f.endswith(".txt")]
+parser = argparse.ArgumentParser()
+parser.add_argument("path", type=str, help="path to data folder")
+args = parser.parse_args()
+
+# TODO: replace with multiple path arguments
+files = [os.path.join(args.path, f) for f in os.listdir(args.path) if os.path.isfile(os.path.join(args.path, f)) and f.endswith(".txt")]
 print files
 
 for i, path in enumerate(files):
@@ -31,3 +36,4 @@ for i, path in enumerate(files):
 
 plt.legend()
 plt.show()
+
