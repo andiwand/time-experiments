@@ -15,7 +15,7 @@ with open(args.path, "r") as f:
     data = [float(line) for line in f.readlines()]
 data = np.array(data)
 mu, sigma = np.mean(data), np.std(data)
-print "%f +- %f" % (mu, sigma)
+print str(mu) + " +- " + str(sigma)
 
 n, bins, patches = plt.hist(data, args.bins, normed=1, facecolor="g")
 plt.plot(bins, mlab.normpdf(bins, mu, sigma), "r--", linewidth=1)

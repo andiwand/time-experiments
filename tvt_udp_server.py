@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+# TODO: python3
 
 import os
 import argparse
@@ -35,3 +36,4 @@ finally:
     for addr in clients:
         f = clients[addr]["log_file"]
         f.close()
+

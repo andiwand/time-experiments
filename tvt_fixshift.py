@@ -11,3 +11,4 @@ with open(path + ".shift", "w") as f:
         f.write(" ")
         f.write("%.9f" % (d[1] - 3600*2))
         f.write("\n")
+
