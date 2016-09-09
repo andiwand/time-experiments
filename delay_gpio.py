@@ -10,7 +10,7 @@ time_end = 0
 
 def isr():
     global time_end
-    time_end = shared.time()
+    time_end = shared.perftime()
     return True
 
 parser = argparse.ArgumentParser()
@@ -29,7 +29,7 @@ wiringpi.wiringPiISR(args.pinin, wiringpi.INT_EDGE_RISING, isr)
 while True:
     time_end = 0
     wiringpi.digitalWrite(args.pinout, 1)
-    time_start = shared.time()
+    time_start = shared.perftime()
     wiringpi.digitalWrite(args.pinout, 0)
     time.sleep(args.interval)
     t = time_end - time_start

@@ -10,7 +10,7 @@ parser.add_argument("-i", "--interval", type=float, help="set interval (default 
 args = parser.parse_args()
 
 while True:
-    t = -shared.time() + shared.time()
+    t = -shared.perftime() + shared.perftime()
     time.sleep(args.interval)
     print(t)
 

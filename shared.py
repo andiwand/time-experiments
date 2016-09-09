@@ -3,8 +3,13 @@ import time
 import datetime
 
 if time.perf_counter:
-    time = time.perf_counter
+    perftime = time.perf_counter
 elif sys.platform == "win32":
+    perftime = time.clock
+else:
+    perftime = time.time
+
+if sys.platform == "win32":
     time = time.clock
 else:
     time = time.time

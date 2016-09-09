@@ -20,16 +20,16 @@ for i, path in enumerate(files):
     with open(path, "r") as f:
         data = [map(float, line.split()) for line in f.readlines()[:-1]]
     data = np.array(data)
-    x, y = zip(*data)
+    x, y = data[:,0], data[:,1]
 
     coefs = poly.polyfit(x, y, 1)
     fit = poly.Polynomial(coefs)
-    y = y - y[0] - (x - x[0])
+    y = y - x
 
     coefs = poly.polyfit(x, y, 1)
     fit = poly.Polynomial(coefs)
+
     c = np.array(colors[i])
-
     plt.scatter(x, y, s=20, c=c, alpha=0.5, lw=0, label=os.path.basename(path))
     #plt.plot(x, fit(x), linewidth=1, color=c*0.5)
 
