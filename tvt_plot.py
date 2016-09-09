@@ -24,8 +24,7 @@ for i, path in enumerate(files):
 
     coefs = poly.polyfit(x, y, 1)
     fit = poly.Polynomial(coefs)
-    x = x - x[0]
-    y = y - y[0] - x
+    y = y - y[0] - (x - x[0])
 
     coefs = poly.polyfit(x, y, 1)
     fit = poly.Polynomial(coefs)

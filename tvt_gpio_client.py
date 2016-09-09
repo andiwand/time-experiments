@@ -12,11 +12,11 @@ dest_address = None
 def isr():
     global sock, dest_address
     t = shared.time()
-    print("tack")
     data = ("%.9f" % t).encode()
     sock.sendto(data, dest_address)
     return True
 
+# TODO: add verbose option
 parser = argparse.ArgumentParser()
 parser.add_argument("pinin", type=int, help="input gpio")
 parser.add_argument("host", type=str, help="host to connect")

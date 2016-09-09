@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# TODO: add loopback gpio option (measure time on signal receive)
+
 import os
 import time
 import argparse
