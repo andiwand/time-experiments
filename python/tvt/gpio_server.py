@@ -44,6 +44,7 @@ def run_wiringpi(args):
     while True:
         last_time = shared.time()
         wiringpi.digitalWrite(args.pinout, 1)
+        time.sleep(0.00001)
         wiringpi.digitalWrite(args.pinout, 0)
         if debug: print(last_time)
         time.sleep(args.interval)

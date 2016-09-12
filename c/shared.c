@@ -68,6 +68,8 @@ void fsleep(float time) {
 }
 
 void defaults(gpio_t* gpio) {
+    setbuf(stdout, NULL);
+    
     int version = rpi_version();
     *gpio = gpio_setup(version);
     
