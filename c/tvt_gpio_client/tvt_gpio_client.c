@@ -37,17 +37,17 @@ static void nlsock_send(char* msg, unsigned int size);
 static irqreturn_t irq_handler(int irq, void *dev_id, struct pt_regs *regs) {
     unsigned long flags;
     
-    // disable hard interrupts (remember them in flag 'flags')
+    // disable hard interrupts (remember them in 'flags')
     local_irq_save(flags);
+    
+    // restore hard interrupts
+    local_irq_restore(flags);
     
     if (pid != -1) {
         nlsock_send("interrupt", 9);
     }
     
-    // restore hard interrupts
-    local_irq_restore(flags);
-    
-    printk(KERN_NOTICE "Interrupt [%d] for device %s was triggered !.\n", irq, (char *) dev_id);
+    printk(KERN_NOTICE "Interrupt [%d] for device %s was triggered!.\n", irq, (char *) dev_id);
 
     return IRQ_HANDLED;
 }
@@ -98,6 +98,7 @@ static void nlsock_send(char* msg, unsigned int size) {
     }
     if (res < 0) {
         printk(KERN_INFO "Error while sending to user\n");
+        return;
     }
 }
 

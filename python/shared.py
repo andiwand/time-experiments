@@ -2,7 +2,7 @@ import sys
 import time
 import datetime
 
-if time.perf_counter:
+if hasattr(time, perf_counter):
     perftime = time.perf_counter
 elif sys.platform == "win32":
     perftime = time.clock
