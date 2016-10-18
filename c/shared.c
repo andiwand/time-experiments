@@ -5,7 +5,8 @@
 #include <ctype.h>
 #include <string.h>
 #include <unistd.h>
-#include "gpio.h"
+#include <sys/resource.h>
+#include <sched.h>
 
 char* trim(const char* str) {
     while (isspace((unsigned char) *str)) str++;
@@ -54,8 +55,8 @@ char* get_cpuinfo(const char* param) {
 int rpi_version() {
     char* hardware = get_cpuinfo("Hardware");
     if (hardware == NULL) return -1;
-    if (strcmp(hardware, "BCM2708")) return RPI_V1;
-    if (strcmp(hardware, "BCM2709")) return RPI_V2;
+    if (strcmp(hardware, "BCM2708") == 0) return RPI_V1;
+    if (strcmp(hardware, "BCM2709") == 0) return RPI_V2;
     return -1;
 }
 
@@ -64,5 +65,20 @@ void fsleep(float time) {
     time -= (unsigned int) time;
     time *= 1000000;
     usleep((unsigned int) time);
+}
+
+void defaults(gpio_t* gpio) {
+    int version = rpi_version();
+    *gpio = gpio_setup(version);
+    
+    cpu_set_t mask;
+    CPU_ZERO(&mask);
+    CPU_SET(0, &mask);
+    if (sched_setaffinity(0, sizeof(mask), &mask)) {
+        printf("sched_setaffinity failed");
+    }
+    if (setpriority(PRIO_PROCESS, 0, -20)) {
+        printf("setpriority failed");
+    }
 }
 

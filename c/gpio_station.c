@@ -11,7 +11,7 @@
 void send(void);
 void sig_handler(int signo);
 
-volatile unsigned* gpio;
+gpio_t gpio;
 int pin;
 
 int main(int argc, char** argv) {
@@ -27,11 +27,10 @@ int main(int argc, char** argv) {
         printf("invalid arguments\n");
     }
     
-    int version = rpi_version();
-    gpio = gpio_setup(version);
+    defaults(&gpio);
     
-    INP_GPIO(pin);
-    OUT_GPIO(pin);
+    INP_GPIO(gpio, pin);
+    OUT_GPIO(gpio, pin);
     
     if (interval == 0) {
         signal(SIGUSR1, sig_handler);
@@ -50,9 +49,9 @@ void send(void) {
     struct timespec ts;
     clock_gettime(CLOCK_REALTIME, &ts);
     
-    GPIO_SET = 1 << pin;
+    GPIO_SET(gpio, pin);
     usleep(10);
-    GPIO_CLR = 1 << pin;
+    GPIO_CLR(gpio, pin);
     
     printf("%ld.%ld\n", ts.tv_sec, ts.tv_nsec);
 }
