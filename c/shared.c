@@ -8,9 +8,9 @@
 #include "gpio.h"
 
 char* trim(const char* str) {
-    while(isspace((unsigned char) *str)) str++;
+    while (isspace((unsigned char) *str)) str++;
 
-    if(*str == '\0') {
+    if (*str == '\0') {
         char* out = (char*) malloc(1);
         out[0] = '\0';
         return out;

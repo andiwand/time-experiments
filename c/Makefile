@@ -1,15 +1,15 @@
 CC=gcc
 CFLAGS=-c -Wall
 LDFLAGS=
-SOURCES=tvt_gpio_server.c gpio.c shared.c
-OBJECTS=$(SOURCES:.c=.o)
-EXECUTABLE=tvt_gpio_server
 
-all: $(SOURCES) $(EXECUTABLE)
+all: gpio_station
 
-$(EXECUTABLE): $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+clean:
+	rm -f *.o
+	rm -f gpio_station
 
 .c.o:
 	$(CC) $(CFLAGS) $< -o $@
 
+gpio_station: gpio_station.o gpio.o shared.o
+	$(CC) $(LDFLAGS) $^ -o $@

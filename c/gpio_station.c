@@ -8,6 +8,7 @@
 #include "gpio.h"
 #include "shared.h"
 
+void send(void);
 void sig_handler(int signo);
 
 volatile unsigned* gpio;
@@ -38,21 +39,25 @@ int main(int argc, char** argv) {
     } else {
         while (1) {
             fsleep(interval);
-            sig_handler(0);
+            send();
         }
     }
     
     return 0;
 }
 
-void sig_handler(int signo) {
+void send(void) {
     struct timespec ts;
     clock_gettime(CLOCK_REALTIME, &ts);
     
     GPIO_SET = 1 << pin;
-    usleep(100);
+    usleep(10);
     GPIO_CLR = 1 << pin;
     
     printf("%ld.%ld\n", ts.tv_sec, ts.tv_nsec);
+}
+
+void sig_handler(int signo) {
+    send();
 }
 

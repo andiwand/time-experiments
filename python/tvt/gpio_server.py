@@ -43,8 +43,8 @@ def run_gpio(pinout, interval):
     wiringpi.wiringPiSetupGpio()
     wiringpi.pinMode(pinout, 1)
     while True:
-        wiringpi.digitalWrite(pinout, 1)
         last_time = shared.time()
+        wiringpi.digitalWrite(pinout, 1)
         wiringpi.digitalWrite(pinout, 0)
         time.sleep(interval)
 
