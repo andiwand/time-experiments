@@ -1,21 +1,21 @@
 import sys
-import time
+import time as pytime
 import datetime
 
-if hasattr(time, "perf_counter"):
-    perftime = time.perf_counter
+if hasattr(pytime, "perf_counter"):
+    perftime = pytime.perf_counter
 elif sys.platform == "win32":
-    perftime = time.clock
+    perftime = pytime.clock
 else:
-    perftime = time.time
+    perftime = pytime.time
 
 if sys.platform == "win32":
-    time = time.clock
+    time = pytime.clock
 else:
-    time = time.time
+    time = pytime.time
 
 def utc_nano():
-    utc = time.mktime(datetime.datetime.utcnow().timetuple())
+    utc = pytime.mktime(datetime.datetime.utcnow().timetuple())
     t = time()
     if int(utc % 100) - int(t % 100) > 50:
         t = int(utc / 100) * 100 + t % 100 + 100

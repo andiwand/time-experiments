@@ -15,6 +15,9 @@
 #define GPIO_PULL(g,p) *(g+37) = (1<<p)     // Pull up/pull down
 #define GPIO_PULLCLK0(g,p) *(g+38) = (1<<p) // Pull up/pull down clock
 
+#define EDGE_RISING 1
+#define EDGE_FALLING 2
+
 #define RPI_V1 1
 #define RPI_V2 2
 

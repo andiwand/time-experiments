@@ -1,20 +1,18 @@
 #!/usr/bin/env python3
 
-# TODO: add loopback gpio option (measure time on signal receive)
-
 import os
 import time
 import argparse
 import socket
 import threading
-import wiringpi
 import shared
 
+debug = False
 last_time = 0
 clients = {}
 
 def get_file(directory, address):
-    global clients
+    global debug, clients
     if address not in clients:
         print("%s connected" % address)
         path = os.path.join(directory, address.replace(".", "_") + ".txt")
@@ -23,7 +21,7 @@ def get_file(directory, address):
     return clients[address]["log_file"]
 
 def run_server(socket, directory):
-    global last_time, clients
+    global debug, last_time, clients
     while True:
         data, addr = sock.recvfrom(1024)
         f = get_file(directory, addr[0])
@@ -38,33 +36,49 @@ def run_server(socket, directory):
         f.write("\n")
         f.flush()
 
-def run_gpio(pinout, interval):
-    global last_time
+def run_wiringpi(args):
+    import wiringpi
+    global debug, last_time
     wiringpi.wiringPiSetupGpio()
-    wiringpi.pinMode(pinout, 1)
+    wiringpi.pinMode(args.pinout, 1)
     while True:
         last_time = shared.time()
-        wiringpi.digitalWrite(pinout, 1)
-        wiringpi.digitalWrite(pinout, 0)
-        time.sleep(interval)
+        wiringpi.digitalWrite(args.pinout, 1)
+        wiringpi.digitalWrite(args.pinout, 0)
+        if debug: print(last_time)
+        time.sleep(args.interval)
+
+def run_gpio_station(args):
+    import shlex, subprocess
+    global debug, last_time
+    cmd = shlex.split(args.gpio_station) + [str(args.pinout), str(args.interval)]
+    with subprocess.Popen(cmd, stdout=subprocess.PIPE) as p:
+        for line in p.stdout:
+            last_time = float(line)
+            if debug: print(last_time)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("pinout", type=int, help="output gpio")
 parser.add_argument("directory", type=str, help="data path")
-parser.add_argument("-p", "--port", type=int, help="set port number (default 12345)",
-                    default=12345)
-parser.add_argument("-i", "--interval", type=float, help="set interval (default 1)",
-                    default=1)
+parser.add_argument("-d", "--debug", help="enable debugging", action="store_true")
+parser.add_argument("-p", "--port", type=int, help="udp port (default %(default)d)", default=12345)
+parser.add_argument("-i", "--interval", type=float, help="signal interval (default %(default)d)", default=1)
+parser.add_argument("--gpio-station", help="path to c gpio station")
 args = parser.parse_args()
 
 try:
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind(("0.0.0.0", args.port))
-
-    t = threading.Thread(target=run_gpio, args=(args.pinout, args.interval))
+    
+    debug = args.debug
+    
+    run_gpio = run_wiringpi
+    if args.gpio_station: run_gpio = run_gpio_station
+    
+    t = threading.Thread(target=run_gpio, args=(args,))
     t.daemon = True
     t.start()
-
+    
     run_server(sock, args.directory)
 finally:
     sock.close()

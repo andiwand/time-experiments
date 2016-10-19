@@ -8,7 +8,7 @@ import shared
 
 parser = argparse.ArgumentParser()
 parser.add_argument("directory", type=str, help="data path")
-parser.add_argument("-p", "--port", type=int, help="set port number (default 12345)",
+parser.add_argument("-p", "--port", type=int, help="set port number (default %(default)d)",
                     default=12345)
 args = parser.parse_args()
 

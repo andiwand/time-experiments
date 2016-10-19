@@ -9,9 +9,12 @@
 #include "shared.h"
 
 int main(int argc, char** argv) {
+    int flags = EDGE_RISING | EDGE_FALLING;
     int pin;
     
     switch (argc) {
+    case 3:
+        flags = strtol(argv[2], NULL, 10);
     case 2:
         pin = strtol(argv[1], NULL, 10);
         break;
@@ -31,7 +34,9 @@ int main(int argc, char** argv) {
         clock_gettime(CLOCK_REALTIME, &ts);
         now = GET_GPIO(gpio, pin);
         if (last != now) {
-            printf("%ld.%ld %d\n", ts.tv_sec, ts.tv_nsec, now != 0);
+            if (flags & EDGE_RISING | flags & EDGE_FALLING) {
+                printf("%ld.%ld %d\n", ts.tv_sec, ts.tv_nsec, now != 0);
+            }
         }
         last = now;
     }
