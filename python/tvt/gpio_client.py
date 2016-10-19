@@ -14,18 +14,24 @@ def callback_wiringpi():
     send(t)
 
 def run_netlink(sock):
-    while True:
-        data = sock.recv(1024)
-        msg_len, msg_type, flags, seq, pid = struct.unpack("=LHHLL", data[:16])
-        ts_sec, ts_nsec, pin, value = struct.unpack("=LLLL", data[16:])
-        t = ts_sec + ts_nsec / 1000000000.0
-        send(t)
+    try:
+        while True:
+            data = sock.recv(1024)
+            msg_len, msg_type, flags, seq, pid = struct.unpack("=LHHLL", data[:16])
+            ts_sec, ts_nsec, pin, value = struct.unpack("=LLLL", data[16:])
+            t = ts_sec + ts_nsec / 1000000000.0
+            send(t)
+    finally:
+        sock.close()
 
 def run_polling(p):
-    for line in p.stdout:
-        line = line.split(" ")
-        t, value = float(line[0]), int(line[1])
-        send(t)
+    try:
+        for line in p.stdout:
+            line = line.split(" ")
+            t, value = float(line[0]), int(line[1])
+            send(t)
+    finally:
+        p.close();
 
 def setup_wiringpi(args):
     wiringpi.wiringPiSetupGpio()
@@ -34,6 +40,7 @@ def setup_wiringpi(args):
     wiringpi.wiringPiISR(args.pinin, wiringpi.INT_EDGE_RISING, callback_wiringpi)
 
 def setup_netlink(args):
+    # TODO: load kernel module?
     import os, socket
     SOL_NETLINK = 270
     NETLINK_ADD_MEMBERSHIP = 1
@@ -64,9 +71,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("pinin", type=int, help="input gpio")
 parser.add_argument("host", type=str, help="host to connect")
 parser.add_argument("-d", "--debug", help="enable debugging", action="store_true")
-parser.add_argument("-p", "--port", type=int, help="udp port (default %(default)d)",
-                    default=12345)
-parser.add_argument("--gpio-netlink", help="path to gpio-netlink.ko")
+parser.add_argument("-p", "--port", type=int, help="udp port (default %(default)d)", default=12345)
+parser.add_argument("--gpio-netlink", help="connect to gpio-netlink.ko", action="store_true")
 parser.add_argument("--gpio-polling", help="path to c gpio polling")
 args = parser.parse_args()
 
