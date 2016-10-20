@@ -14,6 +14,7 @@ def callback_wiringpi():
     send(t)
 
 def run_netlink(sock):
+    import struct
     try:
         while True:
             data = sock.recv(1024)
@@ -41,7 +42,7 @@ def setup_wiringpi(args):
 
 def setup_netlink(args):
     # TODO: load kernel module?
-    import os, socket
+    import os, socket, threading
     SOL_NETLINK = 270
     NETLINK_ADD_MEMBERSHIP = 1
     MY_GROUP = 31
@@ -53,8 +54,8 @@ def setup_netlink(args):
     t.start()
 
 def setup_polling(args):
-    import shlex, subprocess
-    cmd = shlex.split(args.gpio_station) + [str(args.pinin), str(3)]
+    import shlex, subprocess, threading
+    cmd = shlex.split(args.gpio_polling) + [str(args.pinin), str(3)]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     t = threading.Thread(target=run_polling, args=(p,))
     t.daemon = True

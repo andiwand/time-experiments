@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
         clock_gettime(CLOCK_REALTIME, &ts);
         now = GET_GPIO(gpio, pin);
         if (last != now) {
-            if ((flags & EDGE_RISING) | (flags & EDGE_FALLING)) {
+            if ((now & (flags & EDGE_RISING)) | ((!now) & (flags & EDGE_FALLING))) {
                 printf("%ld.%ld %d\n", ts.tv_sec, ts.tv_nsec, now != 0);
             }
         }
