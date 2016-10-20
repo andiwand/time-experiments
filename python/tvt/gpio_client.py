@@ -64,7 +64,7 @@ def send(t):
     global debug, sock, dest_address
     data = ("%.9f" % t).encode()
     sock.sendto(data, dest_address)
-    if debug: print(t)
+    if debug: print("%.9f" % t)
     return True
 
 parser = argparse.ArgumentParser()

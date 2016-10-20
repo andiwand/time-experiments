@@ -45,7 +45,7 @@ def run_wiringpi(args):
         last_time = shared.time()
         wiringpi.digitalWrite(args.pinout, 1)
         wiringpi.digitalWrite(args.pinout, 0)
-        if debug: print(last_time)
+        if debug: print("%.9f" % last_time)
         time.sleep(args.interval)
 
 def run_gpio_station(args):
@@ -55,7 +55,7 @@ def run_gpio_station(args):
     with subprocess.Popen(cmd, stdout=subprocess.PIPE) as p:
         for line in p.stdout:
             last_time = float(line)
-            if debug: print(last_time)
+            if debug: print("%.9f" % last_time)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("pinout", type=int, help="output gpio")
