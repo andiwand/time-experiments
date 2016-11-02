@@ -1,6 +1,8 @@
 import sys
 import time as pytime
 import datetime
+import shlex
+import subprocess
 
 if hasattr(pytime, "perf_counter"):
     perftime = pytime.perf_counter
@@ -29,3 +31,8 @@ def ping(dest, timeout=5):
     import ping as pingimpl
     return pingimpl.do_one(dest, timeout)
 
+def call(cmd):
+    return subprocess.call(shlex.split(cmd))
+
+def call_bool(cmd):
+    return True if call(cmd) == 0 else False

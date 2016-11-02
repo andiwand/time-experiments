@@ -8,6 +8,44 @@ import matplotlib.pyplot as plt
 
 colors = [(1, 0, 0), (0, 0, 1), (1, 0, 1), (1, 1, 0), (0, 1, 1), (0, 1, 0)]
 
+def read(files, offsets=None):
+    data = []
+    for i, path in enumerate(files):
+        offset = offsets[i] if offsets else 0
+        with open(path, "r") as f:
+            pairs = [map(float, line.split(" ")) for line in f.readlines()[:-1]]
+        pairs = np.array(pairs)
+        x, y = pairs[:,0], pairs[:,1]
+        y = y - x
+        x, y = x[offset:], y[offset:]
+        single = {"x": x, "y": y}
+        if args.group: single = group(single, args.group_time, args.min_group_size, args.dropout_max)
+        if args.overlap: single = overlap(single)
+        data.append(single)
+    return data
+
+def plot(data, names, colors):
+    plots = []
+    for i, name in enumerate(names):
+        c = np.array(colors[i])
+        x, y, std = map(data[i].get, ["x", "y", "std"])
+        if std is not None:
+            upper = y + std
+            lower = y - std
+            plt.fill_between(x, lower, upper, facecolor=c, alpha=0.3)
+            plt.plot(x, y, c=c, lw=2, label=name)
+        #plt.scatter(x, y, s=20, c=c, marker="o", alpha=0.5, lw=0, label=name)
+        scatter, = plt.plot(x, y, marker="o", markerfacecolor=c, markeredgecolor=None, markeredgewidth=0, alpha=0.5, lw=0, label=name)
+        plots.append({"scatter": scatter})
+    return plots
+
+def plot_update(data, plots):
+    for i, single in enumerate(data):
+        x, y, std = map(single.get, ["x", "y", "std"])
+        scatter = plots[i]["scatter"]
+        scatter.set_data(x, y)
+    plt.draw()
+
 def group(single, time, minsize, dropmax):
     result = {k: [] for k in ("x", "y", "std", "count")}
     i = 0
@@ -38,40 +76,26 @@ def overlap(single):
     pass
 
 parser = argparse.ArgumentParser()
-parser.add_argument("path", type=str, help="path to data folder")
+parser.add_argument("files", nargs="+", help="path to data folder")
 parser.add_argument("--overlap", help="overlap plots", action="store_true")
 parser.add_argument("--group", help="group measurements", action="store_true")
 parser.add_argument("--group-time", type=float, help="group data between given time", default=20)
 parser.add_argument("--min-group-size", type=int, help="minimal size of the group", default=10)
 parser.add_argument("--dropout-max", type=int, help="drop n maximum values of the group", default=3)
+parser.add_argument("--update", help="live update data", action="store_true")
 args = parser.parse_args()
 
-# TODO: replace with multiple path arguments
-files = [os.path.join(args.path, f) for f in os.listdir(args.path) if os.path.isfile(os.path.join(args.path, f)) and f.endswith(".txt")]
-
-data = []
-
-for i, path in enumerate(files):
-    with open(path, "r") as f:
-        pairs = [map(float, line.split()) for line in f.readlines()[:-1]]
-    pairs = np.array(pairs)
-    x, y = pairs[:,0], pairs[:,1]
-    y = y - x
-    single = {"x": x, "y": y}
-    if args.group: single = group(single, args.group_time, args.min_group_size, args.dropout_max)
-    if args.overlap: single = overlap(single)
-    data.append(single)
-
-for i, path in enumerate(files):
-    c = np.array(colors[i])
-    x, y, std = map(data[i].get, ["x", "y", "std"])
-    if std is not None:
-        upper = y + std
-        lower = y - std
-        plt.fill_between(x, lower, upper, facecolor=c, alpha=0.3)
-        plt.plot(x, y, c=c, lw=2, label=os.path.basename(path))
-    plt.scatter(x, y, s=20, c=c, alpha=0.5, lw=0, label=os.path.basename(path))
+data = read(args.files)
+names = list(map(os.path.basename, args.files))
+plots = plot(data, names, colors)
 
 plt.legend()
-plt.show()
 
+if not args.update:
+    plt.show()
+else:
+    plt.ion()
+    while True:
+        data = read(args.files)
+        plot_update(data, plots)
+        plt.pause(0.5)

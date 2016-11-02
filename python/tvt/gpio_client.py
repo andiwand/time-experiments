@@ -11,26 +11,27 @@ dest_address = None
 
 def callback_wiringpi():
     t = shared.time()
-    send(t)
+    send("%.9f" % t)
 
 def run_netlink(sock):
-    import struct
+    import struct, decimal
     try:
         while True:
             data = sock.recv(1024)
             msg_len, msg_type, flags, seq, pid = struct.unpack("=LHHLL", data[:16])
             ts_sec, ts_nsec, pin, value = struct.unpack("=LLLL", data[16:])
-            t = ts_sec + ts_nsec / 1000000000.0
-            send(t)
+            t = decimal.Decimal("%d.%d" % (ts_sec, ts_nsec))
+            send(str(t))
     finally:
         sock.close()
 
 def run_polling(p):
+    import decimal
     try:
         for line in p.stdout:
             line = line.split(" ")
-            t, value = float(line[0]), int(line[1])
-            send(t)
+            t, value = decimal.Decimal(line[0]), int(line[1])
+            send(str(t))
     finally:
         p.close();
 
@@ -63,9 +64,9 @@ def setup_polling(args):
 
 def send(t):
     global debug, sock, dest_address
-    data = ("%.9f" % t).encode()
+    data = t.encode()
     sock.sendto(data, dest_address)
-    if debug: print("%.9f" % t)
+    if debug: print(t)
     return True
 
 parser = argparse.ArgumentParser()
@@ -85,8 +86,9 @@ if args.gpio_polling: setup_gpio = setup_polling
 
 setup_gpio(args)
 
-dest_address = (args.host, args.port)
+resolved = socket.gethostbyname_ex(args.host)
+address = resolved[2][0]
+dest_address = (address, args.port)
 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
     while True:
         time.sleep(100)
-

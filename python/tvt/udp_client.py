@@ -7,10 +7,8 @@ import shared
 
 parser = argparse.ArgumentParser()
 parser.add_argument("host", type=str, help="host to connect")
-parser.add_argument("-p", "--port", type=int, help="set port number (default %(default)d)",
-                    default=12345)
-parser.add_argument("-i", "--interval", type=float, help="set interval (default %(default)d)",
-                    default=1)
+parser.add_argument("-p", "--port", type=int, help="set port number (default %(default)d)", default=12345)
+parser.add_argument("-i", "--interval", type=float, help="set interval (default %(default)d)", default=1)
 args = parser.parse_args()
 
 socket_address = (args.host, args.port)
@@ -25,4 +23,3 @@ try:
         time.sleep(args.interval)
 finally:
     sock.close()
-

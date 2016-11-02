@@ -25,11 +25,11 @@ def run_server(socket, directory):
     while True:
         data, addr = sock.recvfrom(1024)
         f = get_file(directory, addr[0])
-        
+
         client = clients[addr[0]]
         if client["last_time"] == last_time: continue
         client["last_time"] = last_time
-        
+
         f.write("%.9f" % last_time)
         f.write(" ")
         f.write(data.decode())
@@ -51,12 +51,14 @@ def run_wiringpi(args):
 
 def run_gpio_station(args):
     import shlex, subprocess
+    import decimal
     global debug, last_time
     cmd = shlex.split(args.gpio_station) + [str(args.pinout), str(args.interval)]
     with subprocess.Popen(cmd, stdout=subprocess.PIPE) as p:
         for line in p.stdout:
-            last_time = float(line)
-            if debug: print("%.9f" % last_time)
+            line = line.decode("us-ascii")
+            last_time = decimal.Decimal(line)
+            if debug: print(last_time)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("pinout", type=int, help="output gpio")
@@ -70,20 +72,19 @@ args = parser.parse_args()
 try:
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind(("0.0.0.0", args.port))
-    
+
     debug = args.debug
-    
+
     run_gpio = run_wiringpi
     if args.gpio_station: run_gpio = run_gpio_station
-    
+
     t = threading.Thread(target=run_gpio, args=(args,))
     t.daemon = True
     t.start()
-    
+
     run_server(sock, args.directory)
 finally:
     sock.close()
     for addr in clients:
         f = clients[addr]["log_file"]
         f.close()
-

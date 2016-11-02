@@ -8,8 +8,7 @@ import shared
 
 parser = argparse.ArgumentParser()
 parser.add_argument("directory", type=str, help="data path")
-parser.add_argument("-p", "--port", type=int, help="set port number (default %(default)d)",
-                    default=12345)
+parser.add_argument("-p", "--port", type=int, help="set port number (default %(default)d)", default=12345)
 args = parser.parse_args()
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -36,4 +35,3 @@ finally:
     for addr in clients:
         f = clients[addr]["log_file"]
         f.close()
-

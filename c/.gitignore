@@ -51,5 +51,6 @@ Mkfile.old
 dkms.conf
 
 # Project specific
+adjtimex
 gpio_station
 gpio_polling
