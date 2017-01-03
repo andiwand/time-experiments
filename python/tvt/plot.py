@@ -1,5 +1,8 @@
 #!/usr/bin/env python2
 
+# TODO: improve update; seek file to previous position; keep static plot options
+# TODO: center option
+
 import os
 import argparse
 import numpy as np
@@ -89,13 +92,20 @@ data = read(args.files)
 names = list(map(os.path.basename, args.files))
 plots = plot(data, names, colors)
 
+def handle_close(event):
+    global run
+    run = False
+fig = plt.gcf()
+fig.canvas.mpl_connect("close_event", handle_close)
+
 plt.legend()
 
 if not args.update:
     plt.show()
 else:
     plt.ion()
-    while True:
+    run = True
+    while run:
         data = read(args.files)
         plot_update(data, plots)
         plt.pause(0.5)

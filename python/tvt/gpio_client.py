@@ -20,7 +20,8 @@ def run_netlink(sock):
             data = sock.recv(1024)
             msg_len, msg_type, flags, seq, pid = struct.unpack("=LHHLL", data[:16])
             ts_sec, ts_nsec, pin, value = struct.unpack("=LLLL", data[16:])
-            t = decimal.Decimal("%d.%d" % (ts_sec, ts_nsec))
+            if ts_sec == 0 or ts_nsec < 65536: continue # HOTFIX: kernel module sometimes transmits zeros
+            t = decimal.Decimal("%d.%09d" % (ts_sec, ts_nsec))
             send(str(t))
     finally:
         sock.close()
@@ -71,7 +72,7 @@ def send(t):
 
 parser = argparse.ArgumentParser()
 parser.add_argument("pinin", type=int, help="input gpio")
-parser.add_argument("host", type=str, help="host to connect")
+parser.add_argument("host", help="host to connect")
 parser.add_argument("-d", "--debug", help="enable debugging", action="store_true")
 parser.add_argument("-p", "--port", type=int, help="udp port (default %(default)d)", default=12345)
 parser.add_argument("--gpio-netlink", help="connect to gpio-netlink.ko", action="store_true")

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# TODO: trigger gpio only from python; write to file befor sending event
+
 import os
 import time
 import argparse
@@ -24,16 +26,14 @@ def run_server(socket, directory):
     global debug, last_time, clients
     while True:
         data, addr = sock.recvfrom(1024)
+        time.sleep(0.01)
         f = get_file(directory, addr[0])
 
         client = clients[addr[0]]
         if client["last_time"] == last_time: continue
         client["last_time"] = last_time
 
-        f.write("%.9f" % last_time)
-        f.write(" ")
-        f.write(data.decode())
-        f.write("\n")
+        f.write("%.9f %s\n" % (last_time, data.decode()))
         f.flush()
 
 def run_wiringpi(args):
