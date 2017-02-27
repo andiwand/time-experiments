@@ -19,17 +19,15 @@ clients = {}
 try:
     while True:
         data, addr = sock.recvfrom(1024)
-        t = "%.9f" % shared.utc_nano()
+        t = shared.utc_nano()
         if addr[0] not in clients:
             print "%s:%d connected" % addr
             path = os.path.join(args.directory, addr[0].replace(".", "_") + ".txt")
             f = open(path, "a")
             clients[addr[0]] = {"log_path": path, "log_file": f}
         f = clients[addr[0]]["log_file"]
-        f.write(t)
-        f.write(" ")
-        f.write(data)
-        f.write("\n")
+        f.write("%.9f %s\n" % (t, data))
+        f.flush()
 finally:
     sock.close()
     for addr in clients:
