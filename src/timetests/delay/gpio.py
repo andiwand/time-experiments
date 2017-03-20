@@ -3,7 +3,8 @@
 import time
 import argparse
 import wiringpi
-import shared
+
+from timetests import shared
 
 time_start = 0
 time_end = 0

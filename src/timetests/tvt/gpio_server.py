@@ -7,7 +7,8 @@ import time
 import argparse
 import socket
 import threading
-import shared
+
+from timetests import shared
 
 debug = False
 last_time = 0

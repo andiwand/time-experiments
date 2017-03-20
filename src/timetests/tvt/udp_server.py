@@ -4,7 +4,8 @@
 import os
 import argparse
 import socket
-import shared
+
+from timetests import shared
 
 parser = argparse.ArgumentParser()
 parser.add_argument("directory", type=str, help="data path")

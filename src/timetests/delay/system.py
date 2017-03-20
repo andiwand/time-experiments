@@ -2,7 +2,8 @@
 
 import time
 import argparse
-import shared
+
+from timetests import shared
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--interval", type=float, help="set interval (default 1)",

@@ -4,7 +4,8 @@ import time
 import argparse
 import socket
 import wiringpi
-import shared
+
+from timetests import shared
 
 sock = None
 dest_address = None

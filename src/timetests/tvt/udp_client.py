@@ -3,7 +3,8 @@
 import time
 import argparse
 import socket
-import shared
+
+from timetests import shared
 
 parser = argparse.ArgumentParser()
 parser.add_argument("host", type=str, help="host to connect")
