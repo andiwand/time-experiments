@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
     A pure python ping implementation using raw socket.
@@ -91,13 +91,13 @@ def checksum(source_string):
     countTo = (len(source_string)/2)*2
     count = 0
     while count<countTo:
-        thisVal = ord(source_string[count + 1])*256 + ord(source_string[count])
+        thisVal = source_string[count + 1]*256 + source_string[count]
         sum = sum + thisVal
         sum = sum & 0xffffffff # Necessary?
         count = count + 2
 
     if countTo<len(source_string):
-        sum = sum + ord(source_string[len(source_string) - 1])
+        sum = sum + source_string[len(source_string) - 1]
         sum = sum & 0xffffffff # Necessary?
 
     sum = (sum >> 16)  +  (sum & 0xffff)
@@ -154,11 +154,11 @@ def send_one_ping(my_socket, dest_addr, ID):
     # Make a dummy heder with a 0 checksum.
     header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, my_checksum, ID, 1)
     bytesInDouble = struct.calcsize("d")
-    data = (192 - bytesInDouble) * "Q"
+    data = (192 - bytesInDouble) * b"Q"
     data = struct.pack("d", default_timer()) + data
 
     # Calculate the checksum on the data and the dummy header.
-    my_checksum = checksum(header + data)
+    my_checksum = checksum(bytearray(header + data))
 
     # Now that we have the right checksum, we put that in. It's just easier
     # to make up a new header than to stuff it into the dummy.
@@ -176,7 +176,8 @@ def do_one(dest_addr, timeout):
     icmp = socket.getprotobyname("icmp")
     try:
         my_socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, icmp)
-    except socket.error, (errno, msg):
+    except socket.error as e:
+        errno, msg = e
         if errno == 1:
             # Operation not permitted
             msg = msg + (
@@ -200,19 +201,19 @@ def verbose_ping(dest_addr, timeout = 2, count = 4):
     Send >count< ping to >dest_addr< with the given >timeout< and display
     the result.
     """
-    for i in xrange(count):
-        print "ping %s..." % dest_addr,
+    for i in range(count):
+        print("ping %s..." % dest_addr)
         try:
             delay  =  do_one(dest_addr, timeout)
-        except socket.gaierror, e:
-            print "failed. (socket error: '%s')" % e[1]
+        except socket.gaierror as e:
+            print("failed. (socket error: '%s')" % e)
             break
 
         if delay  ==  None:
-            print "failed. (timeout within %ssec.)" % timeout
+            print("failed. (timeout within %ssec.)" % timeout)
         else:
             delay  =  delay * 1000
-            print "get ping in %0.4fms" % delay
+            print("get ping in %0.4fms" % delay)
     print
 
 
