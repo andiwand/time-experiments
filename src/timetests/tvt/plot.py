@@ -79,7 +79,7 @@ def overlap(single):
     pass
 
 parser = argparse.ArgumentParser()
-parser.add_argument("files", nargs="+", help="path to data folder")
+parser.add_argument("file", nargs="+", help="path to data file")
 parser.add_argument("--overlap", help="overlap plots", action="store_true")
 parser.add_argument("--group", help="group measurements", action="store_true")
 parser.add_argument("--group-time", type=float, help="group data between given time", default=20)

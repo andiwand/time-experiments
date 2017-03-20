@@ -6,7 +6,7 @@ setup(
     url="https://github.com/andiwand/time-tests",
     license="GNU Lesser General Public License",
     author="Andreas Stefl",
-    install_requires=["numpy", "matplotlib", "wiringpi"],
+    install_requires=["wiringpi"],
     author_email="stefl.andreas@gmail.com",
     description="time test scripts",
     long_description="",
