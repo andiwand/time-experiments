@@ -1,3 +1,0 @@
-[submodule "python/ping"]
-	path = python/ping
-	url = https://github.com/samuel/python-ping.git
