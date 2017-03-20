@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 path = "/home/andreas/Desktop/data/192_168_15_130.txt"
 
