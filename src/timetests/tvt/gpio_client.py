@@ -91,6 +91,7 @@ setup_gpio(args)
 resolved = socket.gethostbyname_ex(args.host)
 address = resolved[2][0]
 dest_address = (address, args.port)
-with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
-    while True:
-        time.sleep(100)
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+while True:
+    time.sleep(100)
+sock.close()
