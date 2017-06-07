@@ -34,7 +34,7 @@ def run_server(socket, directory):
         if client["last_time"] == last_time: continue
         client["last_time"] = last_time
 
-        f.write("%s %s\n" % (last_time, data.decode()))
+        f.write("%s %s\n" % (last_time, data.decode().strip()))
         f.flush()
 
 def run_wiringpi(args):
@@ -56,7 +56,7 @@ def run_gpio_station(args):
     cmd = shlex.split(args.gpio_station) + [str(args.pinout), str(args.interval)]
     with subprocess.Popen(cmd, stdout=subprocess.PIPE) as p:
         for line in p.stdout:
-            last_time = line.decode("us-ascii")
+            last_time = line.decode("us-ascii").strip()
             if debug: print(last_time)
 
 parser = argparse.ArgumentParser()
