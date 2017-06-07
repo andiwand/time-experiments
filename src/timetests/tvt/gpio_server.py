@@ -11,7 +11,7 @@ import threading
 from timetests import shared
 
 debug = False
-last_time = 0
+last_time = None
 clients = {}
 
 def get_file(directory, address):
@@ -20,7 +20,7 @@ def get_file(directory, address):
         print("%s connected" % address)
         path = os.path.join(directory, address.replace(".", "_") + ".txt")
         f = open(path, "a")
-        clients[address] = {"log_path": path, "log_file": f, "last_time": 0}
+        clients[address] = {"log_path": path, "log_file": f, "last_time": None}
     return clients[address]["log_file"]
 
 def run_server(socket, directory):
@@ -34,7 +34,7 @@ def run_server(socket, directory):
         if client["last_time"] == last_time: continue
         client["last_time"] = last_time
 
-        f.write("%.9f %s\n" % (last_time, data.decode()))
+        f.write("%s %s\n" % (last_time, data.decode()))
         f.flush()
 
 def run_wiringpi(args):
@@ -43,22 +43,20 @@ def run_wiringpi(args):
     wiringpi.wiringPiSetupGpio()
     wiringpi.pinMode(args.pinout, 1)
     while True:
-        last_time = shared.time()
+        last_time = "%.9f" % shared.time()
         wiringpi.digitalWrite(args.pinout, 1)
         time.sleep(0.00001)
         wiringpi.digitalWrite(args.pinout, 0)
-        if debug: print("%.9f" % last_time)
+        if debug: print(last_time)
         time.sleep(args.interval)
 
 def run_gpio_station(args):
     import shlex, subprocess
-    import decimal
     global debug, last_time
     cmd = shlex.split(args.gpio_station) + [str(args.pinout), str(args.interval)]
     with subprocess.Popen(cmd, stdout=subprocess.PIPE) as p:
         for line in p.stdout:
-            line = line.decode("us-ascii")
-            last_time = decimal.Decimal(line)
+            last_time = line.decode("us-ascii")
             if debug: print(last_time)
 
 parser = argparse.ArgumentParser()
