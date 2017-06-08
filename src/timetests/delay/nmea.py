@@ -44,7 +44,7 @@ try:
         for line in p.stdout:
             line = line.decode("us-ascii")
             nmea_time = decimal.Decimal(line)
-            if debug: print("nmea", time)
+            if debug: print("nmea", nmea_time)
             if not pps_time: continue
             diff = nmea_time - pps_time
             print(diff)
