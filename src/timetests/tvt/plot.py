@@ -88,8 +88,8 @@ parser.add_argument("--dropout-max", type=int, help="drop n maximum values of th
 parser.add_argument("--update", help="live update data", action="store_true")
 args = parser.parse_args()
 
-data = read(args.files)
-names = list(map(os.path.basename, args.files))
+data = read(args.file)
+names = list(map(os.path.basename, args.file))
 plots = plot(data, names, colors)
 
 def handle_close(event):
@@ -106,6 +106,6 @@ else:
     plt.ion()
     run = True
     while run:
-        data = read(args.files)
+        data = read(args.file)
         plot_update(data, plots)
         plt.pause(0.5)
