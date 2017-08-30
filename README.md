@@ -1,5 +1,5 @@
 # time-experiments
-A collection of time experiment scripts espcially aimed for the Raspberry Pi.
+A collection of time experiment scripts especially aimed for the Raspberry Pi.
 
 ## Installation
 ```
