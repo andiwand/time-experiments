@@ -8,7 +8,7 @@ setup(
     author="Andreas Stefl",
     install_requires=["wiringpi"],
     author_email="stefl.andreas@gmail.com",
-    description="A collection of time experiment scripts espcially aimed for the Raspberry Pi.",
+    description="A collection of time experiment scripts especially aimed for the Raspberry Pi.",
     long_description="",
     package_dir={"": "src"},
     packages=["timeexperiments", "timeexperiments.delay", "timeexperiments.tvt"],
