@@ -4,9 +4,9 @@ import time
 import argparse
 import socket
 
-from timetests import shared
+from timeexperiments import shared
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="udp tvt client sends packets with its time periodically to the server")
 parser.add_argument("host", type=str, help="host to connect")
 parser.add_argument("-p", "--port", type=int, help="set port number (default %(default)d)", default=12345)
 parser.add_argument("-i", "--interval", type=float, help="set interval (default %(default)d)", default=1)

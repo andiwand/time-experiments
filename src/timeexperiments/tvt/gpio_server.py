@@ -8,7 +8,7 @@ import argparse
 import socket
 import threading
 
-from timetests import shared
+from timeexperiments import shared
 
 debug = False
 last_time = None
@@ -59,7 +59,7 @@ def run_gpio_station(args):
             last_time = line.decode("us-ascii").strip()
             if debug: print(last_time)
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="gpio tvt server sends gpio impulses to its clients and records their time vs local impulse time")
 parser.add_argument("pinout", type=int, help="output gpio")
 parser.add_argument("directory", type=str, help="data path")
 parser.add_argument("-d", "--debug", help="enable debugging", action="store_true")

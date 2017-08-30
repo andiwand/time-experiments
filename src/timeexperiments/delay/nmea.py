@@ -19,7 +19,7 @@ def run_nmea_pulse(args):
     global debug, last_time
     
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="measures the delay between pps and nmea pulse")
 parser.add_argument("nmea_pulse", type=str, help="nmea_pulse path")
 parser.add_argument("nmea_device", type=str, help="nmea device path")
 parser.add_argument("pps_pulse", type=str, help="pps_pulse path")
@@ -60,4 +60,3 @@ finally:
         print("count:", count)
         print("mean:", sum1 / count)
         print("std:", (sum2 / count - (sum1 / count) ** 2).sqrt())
-

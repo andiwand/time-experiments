@@ -3,9 +3,8 @@
 import time
 import argparse
 import socket
-import wiringpi
 
-from timetests import shared
+from timeexperiments import shared
 
 sock = None
 dest_address = None
@@ -38,6 +37,7 @@ def run_polling(p):
         p.close();
 
 def setup_wiringpi(args):
+    import wiringpi
     wiringpi.wiringPiSetupGpio()
     wiringpi.pinMode(args.pinin, 0)
     wiringpi.pullUpDnControl(args.pinin, 1)
@@ -71,7 +71,7 @@ def send(t):
     if debug: print(t)
     return True
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="gpio tvt client connects to impulse giving server and returns the current time per udp")
 parser.add_argument("pinin", type=int, help="input gpio")
 parser.add_argument("host", help="host to connect")
 parser.add_argument("-d", "--debug", help="enable debugging", action="store_true")

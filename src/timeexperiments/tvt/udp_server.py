@@ -4,9 +4,9 @@ import os
 import argparse
 import socket
 
-from timetests import shared
+from timeexperiments import shared
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="udp tvt server receives packets from its clients and records the containing time vs the local time")
 parser.add_argument("directory", type=str, help="data path")
 parser.add_argument("-p", "--port", type=int, help="set port number (default %(default)d)", default=12345)
 args = parser.parse_args()
