@@ -1,6 +1,11 @@
 # time-experiments
 A collection of time experiment scripts espcially aimed for the Raspberry Pi.
 
+## Installation
+```
+pip install https://github.com/andiwand/time-experiments/archive/master.zip
+```
+
 ## delay-icmp
 ```
 usage: icmp.py [-h] [-i INTERVAL] host
